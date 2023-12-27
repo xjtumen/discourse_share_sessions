@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<script type="text/discourse-plugin" version="0.8">
+    var div = document.createElement('div');
+    div.className = 'universal_auth_div';
+    div.id = 'op';
+    div.style.cssText = 'position: absolute; z-index: 999; height: 16px; width: 16px; top:70px; display:none';
+    // dec2hex :: Integer -> String
+    // i.e. 0-255 -> '00'-'ff'
+    function dec2hex (dec) {
+      return dec.toString(16).padStart(2, "0")
+    }
+
+    // generateId :: Integer -> String
+    function generateId (len) {
+      var arr = new Uint8Array((len || 40) / 2)
+      window.crypto.getRandomValues(arr)
+      return Array.from(arr, dec2hex).join('')
+    }
+
+    function getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    const user = api.getCurrentUser();
+    console.log(user);
+    if(user) {
+        var myStringArray = ["xjtu.men","xjtu.app","xjtu.live"];
+        var arrayLength = myStringArray.length;
+        var imgHtml = "";
+        let cookie_key = getCookie("universal_auth");
+        if (cookie_key == "") {
+            cookie_key = generateId(128);
+            document.cookie = "universal_auth=" + cookie_key;
+        }
+        for (var i = 0; i < arrayLength; i++) {
+            imgHtml += "<img src=\"https://" + myStringArray[i] + "/share_sessions/universal.gif?username=" +
+            user.username + "&key=" + cookie_key + "\"\n" +
+                "         style=\"display: none\"\n" +
+                "         crossorigin=\"use-credentials\"/>"
+        }
+
+        div.innerHTML = '<span>' + imgHtml + '</span>';
+
+        document.body.appendChild(div);
+    }
+
+</script>
+
+

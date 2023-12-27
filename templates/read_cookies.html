@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+
+{% for other_domain in other_domains %}
+<img src="https://{{other_domain}}/share_sessions/universal.gif?nonce_k={{nonce_k}}&nonce_v={{nonce_v}}"
+     style="display: none"
+     crossorigin="use-credentials"/>
+
+{% endfor %}
+</html>
+
+
+
